@@ -1,14 +1,17 @@
-version: 2
 
 models:
   - name: dim_listings_cleansed
+    description: Cleansed table which contains Airbnb listings.
     columns:
+
       - name: listing_id
+        description: Primary key for the listing
         data_tests:
           - unique
           - not_null
 
       - name: host_id
+        description: The host's id. References the host table.
         data_tests:
           - not_null
           - relationships:
@@ -17,31 +20,49 @@ models:
                 field: host_id
 
       - name: room_type
+        description: Type of the apartment / room
         data_tests:
           - accepted_values:
               arguments:
-                values:
-                  - 'Entire home/apt'
-                  - 'Private room'
-                  - 'Shared room'
-                  - 'Hotel room'
+                values: ['Entire home/apt', 'Private room', 'Shared room', 'Hotel room']
 
       - name: minimum_nights
+        description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'
         data_tests:
           - positive_values
 
   - name: dim_hosts_cleansed
-    config:
-      contract:
-        enforced: true
     columns:
       - name: host_id
-        data_type: integer
+        data_tests:
+          - not_null
+          - unique
+
       - name: host_name
-        data_type: string
+        data_tests:
+          - not_null
+
       - name: is_superhost
-        data_type: string
-      - name: updated_at
-        data_type: timestamp
-      - name: created_at
-        data_type: timestamp
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['t', 'f']
+
+  - name: fct_reviews
+    columns:
+      - name: listing_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_listings_cleansed')
+                field: listing_id
+
+      - name: reviewer_name
+        data_tests:
+          - not_null
+
+      - name: review_sentiment
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['positive', 'neutral', 'negative']
