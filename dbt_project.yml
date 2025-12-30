@@ -46,3 +46,6 @@ models:
 data_tests:
   +store_failures: true
   +schema: _test_failures
+
+vars:
+  user_name: PNKR
