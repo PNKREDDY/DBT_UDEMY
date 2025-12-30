@@ -8,7 +8,6 @@ sources:
           - name: room_type
             data_tests:
               - dbt_expectations.expect_column_distinct_count_to_equal:
-                  arguments:
                     value: 4
           - name: price
             data_tests:
